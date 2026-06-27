@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cart – TrendyMart</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 32px;
+  align-items: start;
+}
+.cart-items { background: var(--white); border: 1px solid var(--gray200); border-radius: var(--radius-md); overflow: hidden; }
+.cart-items-header {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 16px; padding: 16px 24px;
+  background: var(--gray50); border-bottom: 1px solid var(--gray200);
+  font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--gray400);
+}
+.cart-row {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 16px; padding: 20px 24px;
+  border-bottom: 1px solid var(--gray100); align-items: center;
+  transition: var(--transition);
+}
+.cart-row:last-child { border-bottom: none; }
+.cart-row:hover { background: var(--gray50); }
+
+.cart-product { display: flex; gap: 16px; align-items: center; }
+.cart-img {
+  width: 72px; height: 72px; border-radius: var(--radius-sm);
+  overflow: hidden; flex-shrink: 0; background: var(--gray100);
+}
+.cart-img img { width: 100%; height: 100%; object-fit: cover; }
+.cart-product-info .name { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.cart-product-info .cat { font-size: 12px; color: var(--gray400); }
+.cart-product-info .variant { font-size: 12px; color: var(--gray600); margin-top: 4px; }
+
+.cart-price { font-size: 15px; font-weight: 600; color: var(--navy); }
+.cart-old-price { font-size: 12px; color: var(--gray400); text-decoration: line-through; display: block; }
+
+.cart-qty-control {
+  display: flex; align-items: center;
+  border: 1.5px solid var(--gray200); border-radius: var(--radius-sm);
+  overflow: hidden; width: fit-content;
+}
+.cart-qty-btn {
+  width: 32px; height: 32px; background: var(--gray50); border: none;
+  cursor: pointer; font-size: 16px; font-weight: 700; color: var(--navy);
+  transition: var(--transition);
+}
+.cart-qty-btn:hover { background: var(--gray200); }
+.cart-qty-num {
+  width: 40px; text-align: center; font-size: 14px; font-weight: 700;
+  color: var(--navy); border: none; border-left: 1.5px solid var(--gray200);
+  border-right: 1.5px solid var(--gray200); background: var(--white);
+}
+
+.cart-total-cell { font-size: 16px; font-weight: 700; color: var(--navy); }
+.cart-remove {
+  width: 32px; height: 32px; border-radius: 50%; background: none;
+  border: 1.5px solid var(--gray200); cursor: pointer; color: var(--gray400);
+  font-size: 16px; display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.cart-remove:hover { background: rgba(232,69,69,0.1); border-color: var(--coral); color: var(--coral); }
+
+.cart-empty {
+  text-align: center; padding: 80px 40px;
+}
+.cart-empty .empty-icon { font-size: 64px; margin-bottom: 20px; }
+.cart-empty h3 { font-family: var(--ff-display); font-size: 24px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+.cart-empty p { color: var(--gray600); margin-bottom: 28px; }
+
+.order-summary {
+  background: var(--white); border: 1px solid var(--gray200);
+  border-radius: var(--radius-md); padding: 28px;
+  position: sticky; top: 88px;
+}
+.summary-title {
+  font-family: var(--ff-display); font-size: 20px; font-weight: 800;
+  color: var(--navy); margin-bottom: 24px;
+  padding-bottom: 16px; border-bottom: 1px solid var(--gray200);
+}
+.summary-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; font-size: 14px; color: var(--gray600);
+  border-bottom: 1px solid var(--gray100);
+}
+.summary-row:last-of-type { border-bottom: none; }
+.summary-row .label { color: var(--gray600); }
+.summary-row .value { font-weight: 600; color: var(--navy); }
+.summary-total {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 0; margin-top: 8px;
+  border-top: 2px solid var(--gray200);
+  font-size: 17px; font-weight: 800; color: var(--navy);
+}
+.summary-savings {
+  background: rgba(16,185,129,0.08); border-radius: var(--radius-sm);
+  padding: 10px 16px; margin: 16px 0;
+  font-size: 13px; font-weight: 600; color: #065f46;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.coupon-form {
+  display: flex; gap: 0; margin: 16px 0;
+  border-radius: var(--radius-sm); overflow: hidden;
+  border: 1.5px solid var(--gray200); transition: var(--transition);
+}
+.coupon-form:focus-within { border-color: var(--coral); }
+.coupon-form input {
+  flex: 1; padding: 10px 14px; border: none;
+  font-size: 13px; outline: none; text-transform: uppercase;
+}
+.coupon-form button {
+  padding: 10px 18px; background: var(--navy); color: #fff;
+  border: none; cursor: pointer; font-size: 13px; font-weight: 700;
+  transition: var(--transition);
+}
+.coupon-form button:hover { background: var(--coral); }
+.coupon-msg { font-size: 12px; margin-top: 6px; }
+.coupon-msg.success { color: #10b981; }
+.coupon-msg.error { color: var(--coral); }
+
+.checkout-btn {
+  width: 100%; justify-content: center; height: 54px; font-size: 16px;
+  margin-top: 8px; border-radius: var(--radius-sm);
+}
+.continue-shopping {
+  display: block; text-align: center; margin-top: 12px;
+  font-size: 13px; color: var(--coral); font-weight: 600;
+  transition: var(--transition);
+}
+.continue-shopping:hover { color: var(--navy); }
+
+.payment-methods {
+  display: flex; justify-content: center; gap: 8px; margin-top: 16px; flex-wrap: wrap;
+}
+.pay-icon {
+  padding: 5px 10px; border: 1px solid var(--gray200);
+  border-radius: 4px; font-size: 11px; font-weight: 700; color: var(--gray400);
+}
+
+.secure-badge {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 12px; color: var(--gray400); margin-top: 12px;
+}
+
+.recommended-section { margin-top: 48px; }
+
+@media (max-width: 1024px) {
+  .cart-layout { grid-template-columns: 1fr; }
+  .order-summary { position: static; }
+}
+@media (max-width: 768px) {
+  .cart-items-header { display: none; }
+  .cart-row { grid-template-columns: 1fr; gap: 12px; position: relative; }
+  .cart-remove { position: absolute; top: 16px; right: 16px; }
+  .cart-product { grid-column: 1; }
+  .cart-price, .cart-qty-control, .cart-total-cell { display: flex; align-items: center; gap: 8px; }
+  .cart-price::before { content: 'Price: '; font-size: 12px; color: var(--gray400); font-weight: 600; }
+  .cart-total-cell::before { content: 'Subtotal: '; font-size: 12px; color: var(--gray400); font-weight: 600; }
+}
+</style>
+</head>
+<body>
+<div id="navbar-root"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Your Cart</h1>
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="sep">›</span>
+      <span>Cart</span>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container">
+    <div class="cart-layout" id="cart-layout"></div>
+
+    <div class="recommended-section">
+      <div class="section-header-flex">
+        <div>
+          <div class="section-label">You May Also Like</div>
+          <h2 class="section-title">Recommended For You</h2>
+        </div>
+      </div>
+      <div class="products-grid-4" id="recommended-products"></div>
+    </div>
+  </div>
+</section>
+
+<div id="newsletter-root"></div>
+<div id="footer-root"></div>
+
+<script src="../js/main.js"></script>
+<script src="../js/layout.js"></script>
+<script>
+document.getElementById('navbar-root').innerHTML = renderNavbar('');
+document.getElementById('footer-root').innerHTML = renderFooter();
+document.getElementById('newsletter-root').innerHTML = renderNewsletter();
+
+let couponDiscount = 0;
+const VALID_COUPONS = { 'FIRST15': 15, 'SAVE20': 20, 'TRENDY10': 10 };
+
+function renderCart() {
+  const items = Cart.items;
+  const subtotal = Cart.total;
+  const shipping = subtotal >= 999 ? 0 : 99;
+  const couponAmt = Math.round(subtotal * couponDiscount / 100);
+  const total = subtotal + shipping - couponAmt;
+  const totalSavings = items.reduce((s, i) => {
+    const p = PRODUCTS.find(p => p.id === i.id);
+    return s + (p && p.oldPrice ? (p.oldPrice - p.price) * i.qty : 0);
+  }, 0) + couponAmt;
+
+  const layout = document.getElementById('cart-layout');
+
+  if (items.length === 0) {
+    layout.innerHTML = `
+      <div style="grid-column:1/-1">
+        <div class="cart-empty">
+          <div class="empty-icon">🛒</div>
+          <h3>Your cart is empty</h3>
+          <p>Looks like you haven't added anything yet.<br>Explore our latest collection!</p>
+          <a href="shop.html" class="btn btn-primary btn-lg">Start Shopping</a>
+        </div>
+      </div>`;
+    return;
+  }
+
+  layout.innerHTML = `
+    <div>
+      <div class="cart-items">
+        <div class="cart-items-header">
+          <div>Product</div>
+          <div>Price</div>
+          <div>Quantity</div>
+          <div>Total</div>
+          <div></div>
+        </div>
+        ${items.map(item => {
+          const p = PRODUCTS.find(pr => pr.id === item.id);
+          if (!p) return '';
+          const lineTotal = p.price * item.qty;
+          return `
+          <div class="cart-row" id="row-${p.id}">
+            <div class="cart-product">
+              <div class="cart-img">
+                <img src="${p.img}" alt="${p.name}">
+              </div>
+              <div class="cart-product-info">
+                <div class="name">${p.name}</div>
+                <div class="cat">${p.category}</div>
+                <div class="variant">Size: M · Color: Classic</div>
+              </div>
+            </div>
+            <div class="cart-price">
+              ${formatPrice(p.price)}
+              ${p.oldPrice ? `<span class="cart-old-price">${formatPrice(p.oldPrice)}</span>` : ''}
+            </div>
+            <div>
+              <div class="cart-qty-control">
+                <button class="cart-qty-btn" onclick="updateQty(${p.id},-1)">−</button>
+                <span class="cart-qty-num" id="qty-${p.id}">${item.qty}</span>
+                <button class="cart-qty-btn" onclick="updateQty(${p.id},1)">+</button>
+              </div>
+            </div>
+            <div class="cart-total-cell">${formatPrice(lineTotal)}</div>
+            <button class="cart-remove" onclick="removeItem(${p.id})" title="Remove">✕</button>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;flex-wrap:wrap;gap:12px;">
+        <a href="shop.html" class="btn btn-outline btn-sm">← Continue Shopping</a>
+        <button class="btn btn-sm" style="border:1.5px solid var(--gray200);background:none;color:var(--gray600)" onclick="clearCart()">🗑 Clear Cart</button>
+      </div>
+    </div>
+
+    <div class="order-summary">
+      <div class="summary-title">Order Summary</div>
+      <div class="summary-row"><span class="label">Subtotal (${items.reduce((s,i)=>s+i.qty,0)} items)</span><span class="value">${formatPrice(subtotal)}</span></div>
+      <div class="summary-row"><span class="label">Shipping</span><span class="value" style="color:${shipping===0?'#10b981':'inherit'}">${shipping === 0 ? 'FREE 🎉' : formatPrice(shipping)}</span></div>
+      ${couponDiscount ? `<div class="summary-row"><span class="label">Coupon (${couponDiscount}% off)</span><span class="value" style="color:var(--coral)">−${formatPrice(couponAmt)}</span></div>` : ''}
+      ${shipping > 0 ? `<div style="font-size:12px;color:var(--coral);padding:8px 0">Add ${formatPrice(999-subtotal)} more for FREE shipping!</div>` : ''}
+      ${totalSavings > 0 ? `<div class="summary-savings">🎉 You're saving ${formatPrice(totalSavings)} on this order!</div>` : ''}
+      <div class="summary-total"><span>Total</span><span>${formatPrice(total)}</span></div>
+
+      <div style="margin-top:16px">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">Have a coupon?</div>
+        <div class="coupon-form">
+          <input type="text" id="couponInput" placeholder="Enter code (try FIRST15)">
+          <button onclick="applyCoupon()">Apply</button>
+        </div>
+        <div class="coupon-msg" id="couponMsg"></div>
+      </div>
+
+      <button class="btn btn-primary checkout-btn" onclick="proceedCheckout()">Proceed to Checkout →</button>
+      <a href="shop.html" class="continue-shopping">← Continue Shopping</a>
+
+      <div class="payment-methods">
+        ${['VISA','MC','UPI','PayTM','COD','EMI'].map(m=>`<span class="pay-icon">${m}</span>`).join('')}
+      </div>
+      <div class="secure-badge">🔒 Secure & Encrypted Checkout</div>
+    </div>
+  `;
+}
+
+function updateQty(id, delta) {
+  const items = Cart.items;
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  const newQty = item.qty + delta;
+  if (newQty < 1) { removeItem(id); return; }
+  Cart.updateQty(id, newQty);
+  renderCart();
+}
+
+function removeItem(id) {
+  Cart.remove(id);
+  showToast('🗑','Item removed from cart');
+  renderCart();
+}
+
+function clearCart() {
+  if (confirm('Clear your entire cart?')) {
+    Cart.clear();
+    renderCart();
+  }
+}
+
+function applyCoupon() {
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  const msg = document.getElementById('couponMsg');
+  if (VALID_COUPONS[code]) {
+    couponDiscount = VALID_COUPONS[code];
+    msg.className = 'coupon-msg success';
+    msg.textContent = `✓ Coupon applied! ${couponDiscount}% discount added.`;
+    showToast('🎉', `Coupon ${code} applied!`);
+    renderCart();
+  } else {
+    msg.className = 'coupon-msg error';
+    msg.textContent = '✕ Invalid coupon code. Try FIRST15, SAVE20, or TRENDY10.';
+  }
+}
+
+function proceedCheckout() {
+  showToast('🎉', 'Order placed! (Demo mode)');
+  setTimeout(() => {
+    alert('🎉 Thank you for your order!\n\nThis is a demo website. In a live store, you would be redirected to a secure payment gateway.\n\nOrder Total: ' + formatPrice(Cart.total));
+  }, 500);
+}
+
+renderCart();
+
+const recommended = [...PRODUCTS].sort(() => Math.random() - 0.5).slice(0, 4);
+document.getElementById('recommended-products').innerHTML = recommended.map(renderProductCard).join('');
+initReveal();
+</script>
+</body>
+</html>

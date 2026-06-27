@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>About Us – TrendyMart</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.mission-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+}
+.mission-img-collage {
+  position: relative; height: 520px;
+}
+.collage-img {
+  position: absolute; border-radius: var(--radius-lg);
+  overflow: hidden; box-shadow: var(--shadow-hover);
+}
+.collage-img img { width: 100%; height: 100%; object-fit: cover; }
+.collage-img:nth-child(1) { width: 60%; height: 70%; top: 0; left: 0; }
+.collage-img:nth-child(2) { width: 55%; height: 60%; bottom: 0; right: 0; }
+.collage-badge {
+  position: absolute; bottom: 160px; left: 50%; transform: translateX(-50%);
+  background: var(--coral); color: #fff; padding: 12px 20px;
+  border-radius: var(--radius-md); text-align: center; z-index: 10;
+  box-shadow: 0 8px 32px rgba(232,69,69,0.35); white-space: nowrap;
+}
+.collage-badge .big { font-family: var(--ff-display); font-size: 28px; font-weight: 800; display: block; }
+.collage-badge .small { font-size: 12px; opacity: 0.9; }
+
+.mission-content .section-label { margin-bottom: 16px; }
+.mission-content h2 { margin-bottom: 24px; }
+.mission-content p { font-size: 16px; line-height: 1.8; color: var(--gray600); margin-bottom: 16px; }
+.mission-values { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; }
+.value-item { display: flex; gap: 16px; align-items: flex-start; }
+.value-icon {
+  width: 48px; height: 48px; border-radius: var(--radius-sm);
+  background: rgba(232,69,69,0.1); display: flex; align-items: center;
+  justify-content: center; font-size: 22px; flex-shrink: 0;
+}
+.value-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.value-desc { font-size: 14px; color: var(--gray600); line-height: 1.6; }
+
+.stats-banner {
+  background: var(--navy); color: #fff; padding: 64px 0;
+}
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 32px; text-align: center;
+}
+.stat-num {
+  font-family: var(--ff-display); font-size: 48px; font-weight: 800;
+  color: var(--coral); line-height: 1;
+}
+.stat-unit { font-family: var(--ff-display); font-size: 32px; }
+.stat-label { font-size: 14px; color: rgba(255,255,255,0.65); margin-top: 8px; }
+
+.team-grid {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 24px;
+}
+.team-card {
+  text-align: center; background: var(--white);
+  border: 1px solid var(--gray200); border-radius: var(--radius-md);
+  padding: 32px 20px; transition: var(--transition);
+}
+.team-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-4px); }
+.team-avatar {
+  width: 88px; height: 88px; border-radius: 50%;
+  margin: 0 auto 16px; overflow: hidden;
+  background: var(--gray100); font-size: 48px;
+  display: flex; align-items: center; justify-content: center;
+  border: 3px solid var(--gray200);
+}
+.team-name { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.team-role { font-size: 13px; color: var(--coral); font-weight: 600; margin-bottom: 10px; }
+.team-bio { font-size: 13px; color: var(--gray600); line-height: 1.6; }
+
+.timeline { position: relative; padding-left: 32px; }
+.timeline::before {
+  content: ''; position: absolute; left: 6px; top: 0; bottom: 0;
+  width: 2px; background: var(--gray200);
+}
+.timeline-item { position: relative; margin-bottom: 40px; }
+.timeline-dot {
+  position: absolute; left: -38px; top: 4px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--coral); border: 3px solid var(--white);
+  box-shadow: 0 0 0 2px var(--coral);
+}
+.timeline-year { font-size: 12px; font-weight: 700; color: var(--coral); letter-spacing: 0.08em; margin-bottom: 6px; }
+.timeline-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.timeline-desc { font-size: 14px; color: var(--gray600); line-height: 1.6; }
+
+.press-grid { display: flex; gap: 40px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.press-logo {
+  background: var(--gray50); border: 1px solid var(--gray200);
+  border-radius: var(--radius-sm); padding: 16px 32px;
+  font-size: 14px; font-weight: 800; color: var(--gray400);
+  letter-spacing: 0.05em; transition: var(--transition);
+}
+.press-logo:hover { border-color: var(--navy); color: var(--navy); }
+
+.story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+
+@media (max-width: 1024px) {
+  .team-grid { grid-template-columns: repeat(2,1fr); }
+  .stats-grid { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 768px) {
+  .mission-grid, .story-grid { grid-template-columns: 1fr; gap: 40px; }
+  .mission-img-collage { height: 340px; }
+  .team-grid { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 480px) {
+  .team-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="navbar-root"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>About TrendyMart</h1>
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="sep">›</span>
+      <span>About Us</span>
+    </div>
+  </div>
+</section>
+
+<section class="section-lg">
+  <div class="container">
+    <div class="mission-grid">
+      <div class="mission-img-collage reveal">
+        <div class="collage-img">
+          <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=600&q=80" alt="Our store">
+        </div>
+        <div class="collage-img">
+          <img src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=600&q=80" alt="Fashion">
+        </div>
+        <div class="collage-badge">
+          <span class="big">2019</span>
+          <span class="small">Founded with ❤️</span>
+        </div>
+      </div>
+      <div class="mission-content reveal reveal-delay-2">
+        <div class="section-label">Our Story</div>
+        <h2 class="section-title">Dressing India, One Outfit at a Time</h2>
+        <p>TrendyMart was born from a simple belief: great style shouldn't cost a fortune. Founded in 2019 by a team of fashion enthusiasts in Mumbai, we started as a small boutique with 50 products and big dreams.</p>
+        <p>Today, we serve over 16,000 happy customers across India, offering more than 500 curated products that blend international trends with Indian sensibilities. Every piece in our collection is handpicked by our team of style experts.</p>
+        <div class="mission-values">
+          <div class="value-item">
+            <div class="value-icon">🌱</div>
+            <div>
+              <div class="value-title">Sustainable Fashion</div>
+              <div class="value-desc">We partner with ethical manufacturers and prioritize eco-friendly materials wherever possible.</div>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">💎</div>
+            <div>
+              <div class="value-title">Uncompromising Quality</div>
+              <div class="value-desc">Every product goes through a 12-point quality check before it's listed on our platform.</div>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">❤️</div>
+            <div>
+              <div class="value-title">Customer First, Always</div>
+              <div class="value-desc">Our 30-day return policy and 24/7 support are built around your peace of mind.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats-banner">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-num">16<span class="stat-unit">K+</span></div>
+        <div class="stat-label">Happy Customers</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <div class="stat-num">500<span class="stat-unit">+</span></div>
+        <div class="stat-label">Products</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <div class="stat-num">28<span class="stat-unit">+</span></div>
+        <div class="stat-label">Cities Delivered</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-num">4.9<span class="stat-unit">★</span></div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-lg">
+  <div class="container">
+    <div class="story-grid">
+      <div>
+        <div class="section-label">How We Grew</div>
+        <h2 class="section-title" style="margin-bottom:40px">Our Journey</h2>
+        <div class="timeline">
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2019</div>
+            <div class="timeline-title">The Spark</div>
+            <div class="timeline-desc">TrendyMart launched in Mumbai with 50 curated products and a small team of 5 passionate people. Our first month brought 200 orders.</div>
+          </div>
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2020</div>
+            <div class="timeline-title">Going Digital</div>
+            <div class="timeline-desc">We launched our full e-commerce platform during the pandemic, making fashion accessible across India without stepping out.</div>
+          </div>
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2022</div>
+            <div class="timeline-title">10,000 Customers Milestone</div>
+            <div class="timeline-desc">We hit 10,000 happy customers, expanded our team to 28 people, and launched our mobile app for a seamless shopping experience.</div>
+          </div>
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2024</div>
+            <div class="timeline-title">Sustainability Pledge</div>
+            <div class="timeline-desc">Launched our 'Green Thread' initiative — committing 20% of our catalogue to sustainable and ethically sourced products.</div>
+          </div>
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2025</div>
+            <div class="timeline-title">Today & Beyond</div>
+            <div class="timeline-desc">16,000+ customers, 500+ products, and expanding to our first physical store in Mumbai. The journey continues!</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">What We Stand For</div>
+        <h2 class="section-title" style="margin-bottom:40px">Our Mission</h2>
+        <div style="background:var(--navy);border-radius:var(--radius-lg);padding:48px;color:#fff;margin-bottom:24px">
+          <div style="font-family:var(--ff-display);font-size:22px;font-weight:700;font-style:italic;line-height:1.5;margin-bottom:20px;color:rgba(255,255,255,0.9)">"To make every Indian feel confident, stylish, and celebrated — without breaking the bank."</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.5)">— TrendyMart Founding Team</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px" id="values-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--gray50)">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="section-label" style="justify-content:center">The People Behind TrendyMart</div>
+      <h2 class="section-title" style="margin-top:10px">Meet Our Team</h2>
+    </div>
+    <div class="team-grid" id="team-grid"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="text-align:center">
+    <div class="section-label" style="justify-content:center">As Seen In</div>
+    <h2 class="section-title" style="margin-top:10px;margin-bottom:40px">Press & Recognition</h2>
+    <div class="press-grid" id="press-grid"></div>
+  </div>
+</section>
+
+<section style="background:var(--coral);color:#fff;padding:64px 0;text-align:center">
+  <div class="container">
+    <h2 style="font-family:var(--ff-display);font-size:clamp(24px,3.5vw,40px);font-weight:800;margin-bottom:12px">Ready to Find Your Style?</h2>
+    <p style="color:rgba(255,255,255,0.8);margin-bottom:28px;font-size:16px">Browse our latest collection and discover your next favourite outfit.</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <a href="shop.html" class="btn btn-outline-white btn-lg">Shop Now →</a>
+      <a href="contact.html" class="btn btn-lg" style="background:rgba(255,255,255,0.15);color:#fff;border:2px solid rgba(255,255,255,0.4)">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<div id="newsletter-root"></div>
+<div id="footer-root"></div>
+<script src="../js/main.js"></script>
+<script src="../js/layout.js"></script>
+<script>
+document.getElementById('navbar-root').innerHTML = renderNavbar('About');
+document.getElementById('footer-root').innerHTML = renderFooter();
+document.getElementById('newsletter-root').innerHTML = renderNewsletter();
+
+document.getElementById('values-list').innerHTML = [
+  ['🌍','Sustainable','Ethical sourcing and eco-conscious packaging'],
+  ['🇮🇳','Made in India','Supporting Indian artisans and manufacturers'],
+  ['💸','Affordable','Fashion-forward looks at prices that make sense'],
+  ['📦','Reliable','Fast delivery with hassle-free returns'],
+].map(([icon,title,desc]) => `
+  <div style="display:flex;gap:16px;padding:16px;background:var(--gray50);border-radius:var(--radius-sm);border:1px solid var(--gray200)" class="reveal">
+    <div style="font-size:24px">${icon}</div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">${title}</div>
+      <div style="font-size:13px;color:var(--gray600)">${desc}</div>
+    </div>
+  </div>`).join('');
+
+document.getElementById('team-grid').innerHTML = [
+  ['👩‍💼','Ananya Mehta','Founder & CEO','Fashion designer turned entrepreneur with 12 years in the industry.'],
+  ['👨‍💻','Rohan Shah','Co-founder & CTO','Tech visionary who built TrendyMart\'s platform from the ground up.'],
+  ['👩‍🎨','Priya Kapoor','Head of Design','Trend forecaster with a passion for making style accessible to all.'],
+  ['👨‍📊','Vikram Patel','Head of Operations','Supply chain expert ensuring every order reaches you on time.'],
+].map(([av,name,role,bio],i) => `
+  <div class="team-card reveal reveal-delay-${i}">
+    <div class="team-avatar">${av}</div>
+    <div class="team-name">${name}</div>
+    <div class="team-role">${role}</div>
+    <div class="team-bio">${bio}</div>
+  </div>`).join('');
+
+document.getElementById('press-grid').innerHTML = ['Vogue India','Forbes India','Economic Times','YourStory','Inc42','Mint Lounge']
+  .map(n => `<div class="press-logo">${n}</div>`).join('');
+
+initReveal();
+</script>
+</body>
+</html>

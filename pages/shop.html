@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shop – TrendyMart</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.shop-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  position: sticky; top: 88px;
+  background: var(--white); border: 1px solid var(--gray200);
+  border-radius: var(--radius-md); padding: 28px;
+}
+.sidebar-section { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--gray100); }
+.sidebar-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.sidebar-title {
+  font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--navy); margin-bottom: 16px;
+}
+
+.filter-option {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 0; cursor: pointer; transition: var(--transition);
+}
+.filter-option:hover .filter-label { color: var(--coral); }
+.filter-checkbox {
+  width: 18px; height: 18px; border-radius: 4px;
+  border: 2px solid var(--gray200); cursor: pointer;
+  appearance: none; transition: var(--transition); flex-shrink: 0;
+}
+.filter-checkbox:checked { background: var(--coral); border-color: var(--coral); }
+.filter-checkbox:checked::after {
+  content: '✓'; display: block; text-align: center;
+  color: #fff; font-size: 12px; line-height: 14px; font-weight: 700;
+}
+.filter-label { font-size: 14px; color: var(--gray600); margin-left: 10px; flex: 1; }
+.filter-count { font-size: 12px; color: var(--gray400); }
+
+/* Price Range */
+.price-range-inputs { display: flex; gap: 10px; align-items: center; }
+.price-input {
+  flex: 1; padding: 8px 12px; border: 1.5px solid var(--gray200);
+  border-radius: var(--radius-sm); font-size: 13px; outline: none;
+  transition: var(--transition);
+}
+.price-input:focus { border-color: var(--coral); }
+.price-sep { color: var(--gray400); font-size: 13px; }
+
+.clear-filters {
+  width: 100%; padding: 10px; border: 1.5px solid var(--coral);
+  border-radius: var(--radius-sm); background: none; color: var(--coral);
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition);
+  margin-top: 4px;
+}
+.clear-filters:hover { background: var(--coral); color: #fff; }
+
+/* --- Toolbar --- */
+.shop-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px; margin-bottom: 24px;
+  padding: 14px 20px; background: var(--gray50);
+  border-radius: var(--radius-sm); border: 1px solid var(--gray200);
+}
+.results-count { font-size: 14px; color: var(--gray600); }
+.results-count strong { color: var(--navy); }
+.toolbar-right { display: flex; align-items: center; gap: 12px; }
+
+.sort-select {
+  padding: 8px 14px; border: 1.5px solid var(--gray200);
+  border-radius: var(--radius-sm); font-size: 13px;
+  background: var(--white); color: var(--navy); cursor: pointer;
+  outline: none; transition: var(--transition);
+}
+.sort-select:focus { border-color: var(--coral); }
+
+.view-toggle { display: flex; gap: 4px; }
+.view-btn {
+  width: 34px; height: 34px; border-radius: var(--radius-sm);
+  background: none; border: 1.5px solid var(--gray200);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transition: var(--transition);
+}
+.view-btn.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+.view-btn:hover:not(.active) { border-color: var(--coral); color: var(--coral); }
+
+/* Active filters */
+.active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.filter-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 20px;
+  background: rgba(232,69,69,0.1); color: var(--coral);
+  font-size: 12px; font-weight: 600;
+}
+.filter-tag button {
+  background: none; border: none; cursor: pointer; color: var(--coral);
+  font-size: 14px; line-height: 1; padding: 0;
+}
+
+/* List view */
+.products-list .product-card {
+  display: grid; grid-template-columns: 200px 1fr;
+  border-radius: var(--radius-md);
+}
+.products-list .product-card-img { aspect-ratio: 1; }
+.products-list .product-card-info { padding: 24px; display: flex; flex-direction: column; justify-content: space-between; }
+.products-list .product-card-name { font-size: 18px; -webkit-line-clamp: 3; }
+.products-list .product-description { font-size: 14px; color: var(--gray600); margin: 8px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.products-list .quick-add { transform: none; position: static; margin-top: 16px; border-radius: var(--radius-sm); padding: 10px 24px; width: fit-content; }
+.products-list .product-card:hover .quick-add { transform: none; }
+
+/* Pagination */
+.pagination { display: flex; justify-content: center; gap: 8px; margin-top: 48px; }
+.page-btn {
+  width: 40px; height: 40px; border-radius: var(--radius-sm);
+  background: var(--white); border: 1.5px solid var(--gray200);
+  cursor: pointer; font-size: 14px; font-weight: 600; color: var(--gray600);
+  transition: var(--transition); display: flex; align-items: center; justify-content: center;
+}
+.page-btn:hover { border-color: var(--coral); color: var(--coral); }
+.page-btn.active { background: var(--coral); border-color: var(--coral); color: #fff; }
+.page-btn.dots { border: none; cursor: default; }
+
+/* Mobile filter toggle */
+.mobile-filter-btn {
+  display: none; align-items: center; gap: 8px;
+  padding: 10px 20px; background: var(--navy); color: #fff;
+  border: none; border-radius: var(--radius-sm); cursor: pointer;
+  font-size: 14px; font-weight: 600; margin-bottom: 20px;
+}
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 200;
+}
+.sidebar-overlay.open { display: block; }
+.sidebar.mobile-open {
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 201;
+  overflow-y: auto; border-radius: 0; width: 280px;
+  animation: slideInLeft 0.3s ease;
+}
+@keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+.sidebar-close { display: none; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--gray600); margin-bottom: 16px; }
+.sidebar.mobile-open .sidebar-close { display: block; }
+
+@media (max-width: 1024px) {
+  .shop-layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; position: fixed; }
+  .mobile-filter-btn { display: flex; }
+}
+@media (max-width: 768px) {
+  .shop-toolbar { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+<div id="navbar-root"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Shop All</h1>
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="sep">›</span>
+      <span>Shop</span>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container">
+    <button class="mobile-filter-btn" id="filterToggle">☰ Filters</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="shop-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose">✕ Close</button>
+
+        <div class="sidebar-section">
+          <div class="sidebar-title">Categories</div>
+          <div id="cat-filters"></div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-title">Price Range</div>
+          <div class="price-range-inputs">
+            <input class="price-input" type="number" id="minPrice" placeholder="₹ Min" min="0">
+            <span class="price-sep">–</span>
+            <input class="price-input" type="number" id="maxPrice" placeholder="₹ Max" min="0">
+          </div>
+          <button class="btn btn-primary btn-sm" style="margin-top:12px;width:100%;justify-content:center" onclick="applyFilters()">Apply</button>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-title">Availability</div>
+          <label class="filter-option">
+            <input type="checkbox" class="filter-checkbox" id="inStock"> <span class="filter-label">In Stock Only</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" class="filter-checkbox" id="onSale"> <span class="filter-label">On Sale</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" class="filter-checkbox" id="newOnly"> <span class="filter-label">New Arrivals</span>
+          </label>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-title">Rating</div>
+          <div id="rating-filters"></div>
+        </div>
+
+        <button class="clear-filters" onclick="clearFilters()">✕ Clear All Filters</button>
+      </aside>
+
+      <!-- Main -->
+      <div>
+        <!-- Toolbar -->
+        <div class="shop-toolbar">
+          <div class="results-count">Showing <strong id="result-count">0</strong> products</div>
+          <div class="toolbar-right">
+            <select class="sort-select" id="sortSelect" onchange="applyFilters()">
+              <option value="default">Sort: Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+              <option value="newest">Newest</option>
+            </select>
+            <div class="view-toggle">
+              <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')" title="Grid">⊞</button>
+              <button class="view-btn" id="listViewBtn" onclick="setView('list')" title="List">☰</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="active-filters" id="active-filters"></div>
+        <div id="products-container" class="products-grid-4"></div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="newsletter-root"></div>
+<div id="footer-root"></div>
+
+<script src="../js/main.js"></script>
+<script src="../js/layout.js"></script>
+<script>
+document.getElementById('navbar-root').innerHTML = renderNavbar('Shop');
+document.getElementById('footer-root').innerHTML = renderFooter();
+document.getElementById('newsletter-root').innerHTML = renderNewsletter();
+
+// Mobile sidebar
+document.getElementById('filterToggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.add('mobile-open');
+  document.getElementById('sidebarOverlay').classList.add('open');
+});
+['sidebarOverlay','sidebarClose'].forEach(id => {
+  document.getElementById(id).addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('mobile-open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+  });
+});
+
+// Render category filters
+const cats = [...new Set(PRODUCTS.map(p => p.category))];
+document.getElementById('cat-filters').innerHTML = cats.map(c => {
+  const count = PRODUCTS.filter(p => p.category === c).length;
+  return `<label class="filter-option">
+    <input type="checkbox" class="filter-checkbox cat-cb" value="${c}">
+    <span class="filter-label">${c}</span>
+    <span class="filter-count">${count}</span>
+  </label>`;
+}).join('');
+
+// Rating filters
+document.getElementById('rating-filters').innerHTML = [4,3,2].map(r => `
+  <label class="filter-option">
+    <input type="checkbox" class="filter-checkbox rating-cb" value="${r}">
+    <span class="filter-label" style="color:var(--gold)">★★★★${r===4?'★':'☆'} & up</span>
+  </label>`).join('');
+
+// URL params pre-select
+const params = new URLSearchParams(window.location.search);
+if (params.get('cat')) {
+  document.querySelectorAll('.cat-cb').forEach(cb => {
+    if (cb.value === params.get('cat')) cb.checked = true;
+  });
+}
+if (params.get('filter') === 'sale') document.getElementById('onSale').checked = true;
+if (params.get('filter') === 'new') document.getElementById('newOnly').checked = true;
+const searchQ = params.get('search') || '';
+
+// State
+let currentView = 'grid';
+let currentPage = 1;
+const perPage = 12;
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('gridViewBtn').classList.toggle('active', v === 'grid');
+  document.getElementById('listViewBtn').classList.toggle('active', v === 'list');
+  applyFilters();
+}
+
+function getFiltered() {
+  const selCats = [...document.querySelectorAll('.cat-cb:checked')].map(c => c.value);
+  const selRatings = [...document.querySelectorAll('.rating-cb:checked')].map(c => +c.value);
+  const onSale = document.getElementById('onSale').checked;
+  const newOnly = document.getElementById('newOnly').checked;
+  const minP = +document.getElementById('minPrice').value || 0;
+  const maxP = +document.getElementById('maxPrice').value || Infinity;
+  const sort = document.getElementById('sortSelect').value;
+
+  let list = PRODUCTS.filter(p => {
+    if (selCats.length && !selCats.includes(p.category)) return false;
+    if (selRatings.length && !selRatings.some(r => p.rating >= r)) return false;
+    if (onSale && !p.oldPrice) return false;
+    if (newOnly && p.badge !== 'new') return false;
+    if (p.price < minP || p.price > maxP) return false;
+    if (searchQ && !p.name.toLowerCase().includes(searchQ.toLowerCase()) && !p.category.toLowerCase().includes(searchQ.toLowerCase())) return false;
+    return true;
+  });
+
+  if (sort === 'price-asc') list.sort((a,b) => a.price - b.price);
+  else if (sort === 'price-desc') list.sort((a,b) => b.price - a.price);
+  else if (sort === 'rating') list.sort((a,b) => b.rating - a.rating);
+  return list;
+}
+
+function renderActiveFilters(filtered) {
+  const tags = [];
+  if (searchQ) tags.push({ label: `Search: "${searchQ}"`, key: 'search' });
+  [...document.querySelectorAll('.cat-cb:checked')].forEach(cb => tags.push({ label: cb.value, key: 'cat', val: cb.value }));
+  if (document.getElementById('onSale').checked) tags.push({ label: 'On Sale', key: 'sale' });
+  if (document.getElementById('newOnly').checked) tags.push({ label: 'New Arrivals', key: 'new' });
+  document.getElementById('active-filters').innerHTML = tags.map(t =>
+    `<div class="filter-tag">${t.label} <button onclick="removeFilter('${t.key}','${t.val||''}')">×</button></div>`
+  ).join('');
+}
+
+function removeFilter(key, val) {
+  if (key === 'cat') document.querySelectorAll('.cat-cb').forEach(cb => { if (cb.value === val) cb.checked = false; });
+  if (key === 'sale') document.getElementById('onSale').checked = false;
+  if (key === 'new') document.getElementById('newOnly').checked = false;
+  applyFilters();
+}
+
+function clearFilters() {
+  document.querySelectorAll('.cat-cb, .rating-cb').forEach(cb => cb.checked = false);
+  document.getElementById('onSale').checked = false;
+  document.getElementById('newOnly').checked = false;
+  document.getElementById('minPrice').value = '';
+  document.getElementById('maxPrice').value = '';
+  document.getElementById('sortSelect').value = 'default';
+  applyFilters(1);
+}
+
+function applyFilters(page) {
+  if (page) currentPage = page;
+  const filtered = getFiltered();
+  const total = filtered.length;
+  const totalPages = Math.ceil(total / perPage);
+  const paginated = filtered.slice((currentPage - 1) * perPage, currentPage * perPage);
+
+  document.getElementById('result-count').textContent = total;
+  renderActiveFilters(filtered);
+
+  const container = document.getElementById('products-container');
+  container.className = currentView === 'list' ? 'products-list' : 'products-grid-4';
+
+  if (paginated.length === 0) {
+    container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:64px 0;color:var(--gray400)">
+      <div style="font-size:48px;margin-bottom:16px">🔍</div>
+      <div style="font-size:18px;font-weight:600;color:var(--navy)">No products found</div>
+      <div style="margin-top:8px">Try adjusting your filters</div>
+    </div>`;
+  } else {
+    container.innerHTML = paginated.map(p => {
+      if (currentView === 'list') {
+        return `<div class="product-card reveal" data-id="${p.id}">
+          <div class="product-card-img">
+            <img src="${p.img}" alt="${p.name}" loading="lazy">
+            <div class="product-card-badges">${p.badge ? `<span class="badge badge-${p.badge}">${p.badge}</span>` : ''}</div>
+          </div>
+          <div class="product-card-info">
+            <div>
+              <div class="product-card-cat">${p.category}</div>
+              <div class="product-card-name">${p.name}</div>
+              <div class="product-description">${p.description}</div>
+              <div class="product-card-rating">
+                <span class="stars">${renderStars(p.rating)}</span>
+                <span class="rating-count">(${p.reviews} reviews)</span>
+              </div>
+              <div class="product-card-price">
+                <span class="price-current">${formatPrice(p.price)}</span>
+                ${p.oldPrice ? `<span class="price-old">${formatPrice(p.oldPrice)}</span>` : ''}
+              </div>
+            </div>
+            <button class="quick-add btn btn-primary btn-sm" onclick="Cart.add(${p.id})">+ Add to Cart</button>
+          </div>
+        </div>`;
+      }
+      return renderProductCard(p);
+    }).join('');
+    initReveal();
+  }
+
+  // Pagination
+  const pag = document.getElementById('pagination');
+  if (totalPages <= 1) { pag.innerHTML = ''; return; }
+  let html = `<button class="page-btn" onclick="applyFilters(${currentPage-1})" ${currentPage===1?'disabled style="opacity:0.4"':''}>‹</button>`;
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) {
+      html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="applyFilters(${i})">${i}</button>`;
+    } else if (Math.abs(i - currentPage) === 2) {
+      html += `<span class="page-btn dots">…</span>`;
+    }
+  }
+  html += `<button class="page-btn" onclick="applyFilters(${currentPage+1})" ${currentPage===totalPages?'disabled style="opacity:0.4"':''}>›</button>`;
+  pag.innerHTML = html;
+}
+
+// Filter change listeners
+document.querySelectorAll('.cat-cb, .rating-cb, #onSale, #newOnly').forEach(el => {
+  el.addEventListener('change', () => applyFilters(1));
+});
+
+applyFilters(1);
+</script>
+</body>
+</html>
